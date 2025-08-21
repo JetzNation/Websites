@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Gold converter</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gold/style.css'  %}">
+    
+</head>
+<body>
+    <div class="stuff-box yellow">
+        <ol>
+            <li><a href="plan">SDP</a></li>
+        </ol>
+        <h2>What's your weight in Gold?</h2>
+        <p>Input Your Weight And Press The = Button To See What You're Worth</p>
+        <p>For Your Privacy, Results Are Removed When Clicked</p>
+        <input type="number" id="input1" value="0" />
+	<select id="conversions" name="conversions">
+  		<option value="lb">Pounds</option>
+  		<option value="oz">Dry Ounces</option>
+  		<option value="t_oz">Troy Ounces</option>
+  		<option value="kg">Kilograms</option>
+		<option value="g">Grams</option>
+		<option value="T">Tons</option>
+	</select>
+    <button id="calculate-btn">=</button>
+    <label id="result"></label>
+    <p id="gph"></p>
+    </div>
+    <div id="attacher">
+
+    </div>
+    
+    <script src="{% static 'gold/script.js'  %}"></script>
+</body>
+</html>

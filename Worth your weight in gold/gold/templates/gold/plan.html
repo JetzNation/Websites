@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>SDP</title>
+		{% load static %}
+		<link rel="stylesheet" href="{% static 'blog/style.css'  %}">
+</head>
+<body style="color: black;">
+<b>Current time: </b>{{current_time}}
+<ol>
+	<li><a href="plan.html">SDP</a></li>
+	<li><a href="index.html">Home</a></li>
+	<li><a href="about.html">About</a></li>
+	<li><a href="tips.html">Tech Tips - CSS edition</a></li>
+</ol>
+<h1>Software Development Plan</h1>
+<div style="background-color:Cornsilk">
+<h2>Requirement Specifications:</h2>
+<p>For this assignment, I needed to write a gold converter and a unit converter using the Django web framework. I already know how to do everything in the Django tutorial. This includes writing views, models, and learning about migrations. I think writing dynamic pages will challengingz </p>
+</div>
+<div style="background-color:GhostWhite">
+<h2>Design</h2>
+<p>For this assignment, I made a couple of view functions and a model. I created a <b>Conversion Class</b>. The <b>Conversion Class</b> contains a <code>unit</code> which is a character field, and a <code>number</code> which is a float field</p>
+<div style="background-color:DodgerBlue">
+<h2>Implementation:</h2>
+<p>An example of my model is:</p>
+		<div class="box">
+		  <pre>
+			<code>
+		class Conversion(models.Model):
+                number = models.FloatField()
+                unit = models.CharField(max_length=4)
+        	</code>
+            </pre>
+        </div>
+        </div>
+        <p>One thing that was unexpected was how difficult it was to get the unit conversion written.</p>
+</div>
+<div style="background-color:MediumOrchid">
+<h2>Testing & Debugging:</h2>
+<p>Most of my bugs occured because I used my ip adress instead of localhost, resulting in a CORS error.</p>
+</div>
+<div style="background-color:PeachPuff">
+<h2>Deployment:</h2>
+<p>All of the required files are on my GitLab repository and the code is working.</p>
+</div>
+<div style="background-color:PaleGreen">
+<h2>Maintenance:</h2>
+<p>Writing the unit conversion api was the hardest part. The program should continue working unless Django doesn't support this version anymore but I think that's unlikely.</p>
+</div>
+</body>
+</html>
