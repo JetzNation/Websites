@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <title>Weather App</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="app">
+            <div class="stuff-box white">
+                <h1>Vue.JS Weather App</h1>
+                <a href="plan.html">SDP</a>
+            </div>
+            <div v-if="failed">
+                <h2>Failed to load data</h2>
+            </div>
+            <div v-else class="stuff-box blue">
+                <h2>Your Location</h2>
+                <p>You are located in {{ city }}, {{ region }}, {{ country }} at coordinates &#40;{{ latitude }}, {{ longitude }}&#41;</p>
+            </div>
+            <div v-if="failed">
+                <h2>Failed to load data</h2>
+            </div>
+            <div v-else class="stuff-box yellow">
+                <h2>Current Conditions</h2>
+                <p>Current weather conditions @ {{ timestamp }}</p>
+                <ul>
+                    <li>Currently {{ currentTemp }}F</li>
+                    <li>High {{ highTemp }}F</li>
+                    <li>Low {{ lowTemp }}F</li>
+                    <li>{{ description }}</li>
+                    <li>{{ humidity }}% humidity</li>
+                    <li>{{ pressure }} hPa pressure</li>
+                </ul>
+            </div>
+            <div class="stuff-box cyan">
+                <h2>5 day 3-hour forecast</h2>
+                <span style="color:crimson">{{ unlikely }} unlikely </span>
+                <span style="color:gray">{{ neutral }} neutral </span>
+                <span style="color: rgb(0, 100, 0)">{{ likely }} likely</span>
+                <div v-for="(forecast, idx) in forecasts">
+                    <div :class="[forecast.state]" class="stuff-box" v-on:click="toggle" :data-index="idx">
+                        <h3>Conditions for {{ forecast.dt_txt }}</h3>
+                        <ul>
+                            <li>Temperature {{ forecast.main.temp }}F</li>
+                            <li>{{ forecast.weather[0].description }}</li>
+                            <li>{{ forecast.main.humidity }}% humidity</li>
+                            <li>{{ forecast.main.pressure }} hPa pressure</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return { 
+                        city: "Loading...",
+                        region: "Loading...",
+                        longitude: 0,
+                        latitude: 0,
+                        country: "Loading...",
+                        timestamp: "Loading...",
+                        currentTemp: "Loading...",
+                        highTemp: "Loading...",
+                        lowTemp: "Loading...",
+                        description: "Loading...",
+                        humidity: "Loading...",
+                        pressure: "Loading...",
+                        unlikely: 0,
+                        neutral: 0,
+                        likely: 0,
+                        forecasts: [],
+                        failed: false,
+                    };
+                },
+                created() {
+                    this.now = new Date();
+                    this.timestamp = this.now.toLocaleString();
+                    console.log(this.timestamp);
+                    fetch("https://ipgeolocation.abstractapi.com/v1/?api_key=c9c57135dc0f43a295d08afcbfe93195")
+                        .then(response => response.json())
+                        .then(data => {
+                            this.longitude = data.longitude;
+                            this.latitude = data.latitude;
+                            this.city = data.city;
+                            this.region = data.region;
+                            this.country = data.country;
+                            console.log(this.longitude);
+                            console.log(this.latitude);
+                            console.log(this.city);
+                            console.log(this.region);
+                            console.log(this.country);
+                            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&units=imperial&appid=ec2f63f50c7830400d95503aca8c5fd1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                this.currentTemp = data.main.temp;
+                                this.highTemp = data.main.temp_max;
+                                this.lowTemp = data.main.temp_min;
+                                this.description = data.weather[0].description;
+                                this.humidity = data.main.humidity;
+                                this.pressure = data.main.pressure;
+                                console.log(this.currentTemp);
+                                console.log(this.highTemp);
+                                console.log(this.lowTemp);
+                                console.log(this.description);
+                                console.log(this.humidity);
+                                console.log(this.pressure);
+                            })
+                            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.latitude}&lon=${this.longitude}&units=imperial&appid=ec2f63f50c7830400d95503aca8c5fd1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                this.forecasts = data.list;
+                                for (let i = 0; i < this.forecasts.length; i++) {
+                                    this.forecasts[i].state = "neutral";
+                                }
+                                this.neutral = this.forecasts.length;
+                            })
+                    
+                        })
+                        .catch(err => {
+                            this.failed = true;
+                            console.log(err);
+                        });
+                    },
+                computed: {
+                  
+                },
+                methods: {
+                    toggle(ev) {
+                        let idx = ev.currentTarget.getAttribute('data-index');
+                        let forecast = this.forecasts[idx];
+                        if (forecast.state == "neutral") {
+                            forecast.state = "likely";
+                            this.likely++;
+                            this.neutral--;
+                            console.log(this.likely);
+                        } else if (forecast.state == "likely") {
+                            forecast.state = "unlikely";
+                            this.likely--;
+                            this.unlikely++;
+                        } else {
+                            forecast.state = "neutral";
+                            this.unlikely--;
+                            this.neutral++;
+                        }
+
+                    }
+                }
+            });
+            
+            const vm = app.mount("#app");
+        </script>
+    </body>
+
+
